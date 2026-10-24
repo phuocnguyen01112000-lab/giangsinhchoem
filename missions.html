@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nhiệm vụ</title><link rel="stylesheet" href="css/style.css"></head>
+<body>
+<div class="top"><a class="pill" href="index.html">← Máy gắp</a><span class="pill">🪙 <span id="coins">0</span></span></div>
+<h2>🎯 Nhiệm vụ kiếm xu</h2>
+<div class="card"><h3>🧺 Hứng xu</h3><p>Di chuyển rổ hứng xu trong 30 giây, tránh bom! 4 điểm = 1 🪙 (tối đa 8).</p><a class="btn-main" href="minigames/catch.html">Chơi ngay</a></div>
+<div class="card"><h3>🃏 Lật thẻ ghi nhớ</h3><p>Tìm đủ 6 cặp thẻ. Càng ít lượt càng nhiều xu (2–5 🪙).</p><a class="btn-main" href="minigames/memory.html">Chơi ngay</a></div>
+<div class="card"><h3>🐱 Mèo Cam Phiêu Lưu</h3><p>Game phiêu lưu toàn màn hình: 3 màn (Đồng Cỏ → Hang Băng → Dung Nham). Mỗi màn nhặt tối đa 7 🪙 + 3 🪙 khi qua màn; hạ Boss được 10 🪙.</p><a class="btn-main" href="minigames/runner.html">Chơi ngay</a></div>
+<div class="card"><h3>🧭 Mê cung</h3><p>Nhìn từ trên xuống, nhặt xu trong 60 giây. Mỗi xu = 1 🪙, tới cửa ra +4 🪙.</p><a class="btn-main" href="minigames/maze.html">Chơi ngay</a></div>
+<script src="js/store.js"></script><script>document.getElementById('coins').textContent=Store.load().coins</script>
+</body></html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hứng xu</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/pixel.css"></head>
+<body>
+<div class="top"><a class="pill" href="../missions.html">← Nhiệm vụ</a><span class="pill">⏱ <span id="t">30</span>s</span><span class="pill">Điểm <span id="sc">0</span></span></div>
+<canvas id="c" width="320" height="420" style="width:min(94vw,320px);touch-action:none"></canvas>
+<p id="res" style="text-align:center;min-height:24px">Kéo chuột/ngón tay hoặc dùng A/D · tránh bom!</p>
+<button class="btn-main" id="start" onclick="start()">Bắt đầu</button>
+<script src="../js/store.js"></script><script src="../js/pixel.js"></script>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d');x.imageSmoothingEnabled=false;
+const COIN=PX.spr(SPR.coin),BOMB=PX.spr(SPR.bomb),BASK=PX.spr(SPR.basket,3);
+const STARS=Array.from({length:30},(_,i)=>[(i*97)%320,(i*53)%380]);
+let bx=160,items=[],score=0,t=30,run=false,last=0,sp=0,k={l:false,r:false};
+function move(e){const r=c.getBoundingClientRect();bx=Math.max(28,Math.min(292,(e.clientX-r.left)*c.width/r.width))}
+c.addEventListener('pointermove',move);c.addEventListener('pointerdown',move);
+addEventListener('keydown',e=>{if(e.code==='KeyA'||e.code==='ArrowLeft')k.l=true;if(e.code==='KeyD'||e.code==='ArrowRight')k.r=true});
+addEventListener('keyup',e=>{if(e.code==='KeyA'||e.code==='ArrowLeft')k.l=false;if(e.code==='KeyD'||e.code==='ArrowRight')k.r=false});
+function start(){items=[];score=0;t=30;run=true;last=performance.now();$('start').style.display='none';$('res').textContent='';requestAnimationFrame(loop)}
+const $=id=>document.getElementById(id);
+function draw(){
+  x.fillStyle='#1a1c2c';x.fillRect(0,0,320,420);x.fillStyle='#fff';STARS.forEach(([a,b])=>x.fillRect(a,b,2,2));
+  x.fillStyle='#5c3a1a';x.fillRect(0,410,320,10);
+  items.forEach(i=>i.bomb?x.drawImage(BOMB,Math.round(i.x-12),Math.round(i.y-12)):x.drawImage(COIN,Math.round(i.x-8),Math.round(i.y-8)));
+  x.drawImage(BASK,Math.round(bx-24),386);
+}
+function loop(n){
+  if(!run)return;const dt=Math.min(.05,(n-last)/1000);last=n;t-=dt;sp-=dt;
+  bx=Math.max(28,Math.min(292,bx+((k.r?1:0)-(k.l?1:0))*240*dt));
+  if(sp<=0){sp=.45;items.push({x:20+Math.random()*280,y:-20,v:120+Math.random()*80+(30-t)*5,bomb:Math.random()<.2})}
+  items.forEach(i=>i.y+=i.v*dt);
+  items=items.filter(i=>{if(i.y>385&&i.y<410&&Math.abs(i.x-bx)<30){score=Math.max(0,score+(i.bomb?-2:1));return false}return i.y<430});
+  $('t').textContent=Math.max(0,Math.ceil(t));$('sc').textContent=score;draw();
+  if(t<=0){run=false;const r=Math.min(8,Math.floor(score/4));Store.addCoins(r);
+    $('res').textContent=`Hết giờ! ${score} điểm → nhận ${r} 🪙`;const b=$('start');b.textContent='Chơi lại';b.style.display='';return}
+  requestAnimationFrame(loop);
+}
+draw();
+</script></body></html>

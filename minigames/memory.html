@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lật thẻ</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/pixel.css">
+<style>#g{display:grid;grid-template-columns:repeat(4,72px);gap:10px;margin:14px 0}
+.cd{width:72px;height:72px;border:4px solid #000;border-radius:0;background:repeating-conic-gradient(#7b4bd6 0 25%,#5b35b0 0 50%) 0 0/16px 16px;cursor:pointer;box-shadow:0 4px 0 #000;padding:0}
+.cd img{width:48px;height:48px;image-rendering:pixelated;display:none}
+.cd.open,.cd.done{background:#efe6cf}.cd.open img,.cd.done img{display:block;margin:auto}.cd.done{background:#9be7a8}</style></head>
+<body>
+<div class="top"><a class="pill" href="../missions.html">← Nhiệm vụ</a><span class="pill">Lượt <span id="mv">0</span></span></div>
+<div id="g"></div><p id="res" style="text-align:center;min-height:24px"></p>
+<button class="btn-main" onclick="newGame()">Chơi lại</button>
+<script src="../js/store.js"></script><script src="../js/pixel.js"></script>
+<script>
+const E=['🧸','🐰','🐱','👻','🐧','🐸'],URL=Object.fromEntries(E.map(e=>[e,PX.emojiURL(e,16)]));
+let a,b,moves,found,lock;const $=id=>document.getElementById(id);
+function newGame(){
+  const d=[...E,...E].sort(()=>Math.random()-.5);a=b=null;moves=0;found=0;lock=false;$('mv').textContent=0;$('res').textContent='';
+  const g=$('g');g.innerHTML='';
+  d.forEach(e=>{const k=document.createElement('button');k.className='cd';k.dataset.e=e;k.innerHTML=`<img src="${URL[e]}" alt="">`;k.onclick=()=>flip(k);g.appendChild(k)});
+}
+function flip(k){
+  if(lock||k.classList.contains('open')||k.classList.contains('done'))return;
+  k.classList.add('open');if(!a){a=k;return}
+  b=k;moves++;$('mv').textContent=moves;lock=true;
+  if(a.dataset.e===b.dataset.e){a.className=b.className='cd done';a=b=null;lock=false;if(++found===6)finish()}
+  else setTimeout(()=>{a.className=b.className='cd';a=b=null;lock=false},700);
+}
+function finish(){const r=moves<=10?5:moves<=16?3:2;Store.addCoins(r);$('res').textContent=`Xong sau ${moves} lượt → nhận ${r} 🪙`}
+newGame();
+</script></body></html>

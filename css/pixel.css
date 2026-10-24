@@ -1,0 +1,6 @@
+body{background:#1a1c2c;font-family:"Courier New",Consolas,monospace;font-weight:700;color:#fff}
+.pill,.btn-main,.pad button{border-radius:0;border:3px solid #000;box-shadow:0 4px 0 #000;background:#ffd23f;color:#1a1c2c;text-transform:uppercase;font-family:inherit;letter-spacing:1px}
+.btn-main{background:#5cd65c;margin-top:8px}.pad button{background:#4fd6ff;font-size:20px}
+.pill:active,.btn-main:active,.pad button:active{transform:translateY(3px);box-shadow:0 1px 0 #000;background:#fff;color:#1a1c2c}
+canvas{image-rendering:pixelated;border-radius:0!important;border:4px solid #fff;box-shadow:0 0 0 4px #000,0 8px 0 4px #000}
+h2,h3{text-transform:uppercase;letter-spacing:2px}

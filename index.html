@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Máy gắp thú</title><link rel="stylesheet" href="css/style.css"></head>
-<body>
-<div class="top">
-  <span class="pill">🪙 <span id="coins">0</span></span>
-  <button class="pill" onclick="showCollection()">🧺 Bộ sưu tập <span id="owned"></span></button>
-  <a class="pill" href="missions.html">🎯 Nhiệm vụ</a>
-</div>
-<div id="prog"></div>
-<canvas id="c" width="460" height="560"></canvas>
-<div class="cost">Bấm 🪙 bỏ xu (2 xu/lượt) → giữ ▶ để di chuyển → bấm ▼ để gắp · mũi tên hai bên để đổi máy<br>Phím: C bỏ xu · → di chuyển · Space gắp</div>
-<div id="msg"></div>
-<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="box" id="mbox"></div></div>
-<script src="js/store.js"></script><script src="js/pixel.js"></script><script src="js/items.js"></script><script src="js/items-art.js"></script><script src="js/claw.js"></script>
-</body></html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Máy gắp thú</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="top">
+      <span class="pill">🪙 <span id="coins">0</span></span>
+      <button class="pill" onclick="showCollection()">🧺 Bộ sưu tập <span id="owned"></span></button>
+      <a class="pill" href="missions.html">🎯 Nhiệm vụ</a>
+    </div>
+    <div id="prog"></div>
+    <canvas id="c" width="460" height="560"></canvas>
+    <div class="cost">Bấm 🪙 bỏ xu (2 xu/lượt) → giữ ▶ để di chuyển → bấm ▼ để gắp · mũi tên hai bên để đổi máy<br>Phím: C bỏ xu · → di chuyển · Space gắp</div>
+    <div id="msg"></div>
+    <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="box" id="mbox"></div></div>
+    <script src="js/store.js"></script><script src="js/pixel.js"></script><script src="js/items.js"></script><script src="js/items-art.js"></script><script src="js/claw.js"></script>
+  </body>
+</html>

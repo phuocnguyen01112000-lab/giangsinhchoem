@@ -1,9 +1,9 @@
 // 3 máy x 12 vật phẩm = 36. Ảnh: assets/<id>.png (chưa có ảnh thì dùng emoji).
 // Cờ cuối: 's' = vật phẩm đặc biệt (trái tim cầu vồng), 'f' = khung polaroid (tự dán ảnh vào assets/my-photo.png).
 const MACHINES=[
- {name:'Máy 1 · Yêu Thương',title:'YÊU THƯƠNG',c:'#ff7eb6',d:'#d9467f',bg:['#ffe9f3','#ffdcec','#ffcfe5','#ffc2dd']},
- {name:'Máy 2 · Kỷ Niệm',   title:'KỶ NIỆM',   c:'#4fb8e8',d:'#2a86b8',bg:['#e3f7ff','#cdeffc','#b9e9f9','#a4e0f5']},
- {name:'Máy 3 · Kho Báu',   title:'KHO BÁU',   c:'#9b7bff',d:'#6a4bd1',bg:['#eee9ff','#e0d9ff','#d3caff','#c6bbff']}
+ {name:'Máy 1 · Yêu Thương',title:'Love you',c:'#ff7eb6',d:'#d9467f',bg:['#ffe9f3','#ffdcec','#ffcfe5','#ffc2dd']},
+ {name:'Máy 2 · Kỷ Niệm',   title:'Miss you',   c:'#4fb8e8',d:'#2a86b8',bg:['#e3f7ff','#cdeffc','#b9e9f9','#a4e0f5']},
+ {name:'Máy 3 · Kho Báu',   title:'Wanna be with you',   c:'#9b7bff',d:'#6a4bd1',bg:['#eee9ff','#e0d9ff','#d3caff','#c6bbff']}
 ];
 const RAW=[
  [['chick','Gà Con','🐥','"chíp chíp, gà con muốn gửi lời chúc đến cho Ngọc Maii, mong rằng ngày nào của Maii cũng luôn thật vui vẻ"'],

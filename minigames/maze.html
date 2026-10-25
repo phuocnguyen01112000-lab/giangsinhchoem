@@ -170,15 +170,26 @@ function drawRoom(){
 }
 
 /* ---------- Điều khiển nhân vật ---------- */
-function mv(d){
-  const [a,b]={L:[-1,0],R:[1,0],U:[0,-1],D:[0,1]}[d];
-  if(scene==='xmas'){
-    if(letterOpen){const mx=Math.max(0,letterLines.length*LH-LVIEW);if(d==='U')ls=Math.max(0,ls-LH);if(d==='D')ls=Math.min(mx,ls+LH);return}fd=d;if(a)face=a;const nx=px+a,ny=py+b;
-    if(ny===RH-1&&nx===10){toSelect();return}
-    if(RS[ny][nx])return;px=nx;py=ny;return;
-  }
-  if(scene!=='play'||paused)return;
-  fd=d;if(a)face=a;if(g[py+b][px+a])return;px+=a;py+=b;
+/* ---------- Di chuyển mượt ---------- */
+const held=[];            // các phím đang giữ (phím bấm sau cùng được ưu tiên)
+const SPD=0.09;           // ô/frame, ~5.4 ô/giây. Tăng = đi nhanh hơn
+const HB=0.3;             // nửa kích thước hitbox (tính theo ô). Nhỏ = dễ lách góc, lớn = dễ kẹt
+let moving=false,lcx=-1,lcy=-1;
+
+function mv(d){           // chỉ còn dùng để cuộn thư
+  const mx=Math.max(0,letterLines.length*LH-LVIEW);
+  if(d==='U')ls=Math.max(0,ls-LH);
+  if(d==='D')ls=Math.min(mx,ls+LH);
+}
+function solid(q,r){
+  if(scene==='xmas')return q<0||r<0||q>=RW||r>=RH||RS[r][q];
+  return q<0||r<0||q>=GW||r>=GH||g[r][q];
+}
+const hit=(a,b)=>[[-HB,-HB],[HB,-HB],[-HB,HB],[HB,HB]].some(([i,j])=>solid(Math.round(a+i),Math.round(b+j)));
+
+function onCell(){        // chạy mỗi khi bước sang ô mới: nhặt xu, cửa thoát...
+  if(px===lcx&&py===lcy)return;lcx=px;lcy=py;
+  if(scene==='xmas'){if(px===10&&py===RH-1)toSelect();return}
   let k=coins.findIndex(([q,r])=>q===px&&r===py);
   if(k>=0){coins.splice(k,1);got++}
   k=hearts.findIndex(([q,r])=>q===px&&r===py);
@@ -189,13 +200,29 @@ function mv(d){
     if(n>=3)finish(true,true);else note('CỔNG KHÓA! Cần 3 Trái Tim Cầu Vồng ('+n+'/3)',160);
   }
 }
+function walk(){
+  moving=false;
+  if(letterOpen||(scene==='play'&&paused)||!held.length)return;
+  const d=held[held.length-1],[a,b]={L:[-1,0],R:[1,0],U:[0,-1],D:[0,1]}[d];
+  fd=d;if(a)face=a;
+  const ox=pvx,oy=pvy;
+  if(!hit(pvx+a*SPD,pvy))pvx+=a*SPD;     // trượt theo từng trục nên cọ vào tường không bị kẹt
+  if(!hit(pvx,pvy+b*SPD))pvy+=b*SPD;
+  if(scene==='play'){                    // tự căn giữa hành lang để rẽ góc dễ hơn
+    if(a){const n=pvy+(Math.round(pvy)-pvy)*.2;if(!hit(pvx,n))pvy=n}
+    if(b){const n=pvx+(Math.round(pvx)-pvx)*.2;if(!hit(n,pvy))pvx=n}
+  }
+  moving=pvx!==ox||pvy!==oy;
+  px=Math.round(pvx);py=Math.round(pvy);
+  onCell();
+}
 function drawPlayer(){
   if(inv>0&&((tk/5|0)&1))return;
-  const cx=pvx*S+12,cy=pvy*S+12,mvg=Math.abs(px-pvx)+Math.abs(py-pvy)>.06;
+  const cx=pvx*S+12,cy=pvy*S+12,mvg=moving;
   x.save();R(cx-6,cy+9,12,3,'rgba(0,0,0,.2)');
   if(piOK){
     const fr=mvg?(tk/7|0)%PL.n:0,row=PL.row[fd==='R'?'L':fd];
-    x.translate(cx,cy);if(fd==='R')x.scale(-1,1);x.drawImage(PI,fr*PL.fw,row*PL.fh,PL.fw,PL.fh,-S/2,-S/2,S,S);
+    x.translate(cx,cy);if(fd==='R')x.scale(-1,1);x.drawImage(PI,fr*PL.fw,row*PL.fh,PL.fw,PL.fh,-16,-21,32,32);
   }else{x.translate(cx,cy+(mvg?Math.sin(tk/3)*1.5:0));x.scale(face,1);x.drawImage(CAT,-CAT.width/2,-CAT.height/2)}
   x.restore();
 }
@@ -320,7 +347,9 @@ function repeat(){const n=performance.now();if(dir&&n>=nextAt){mv(dir);nextAt=n+
 addEventListener('keydown',e=>{
   const k=e.code;
   if((scene==='play'&&!paused)||scene==='xmas'){
-    if(KM[k]){e.preventDefault();if(!e.repeat)press(KM[k]);return}
+    if(KM[k]){e.preventDefault();
+  if(letterOpen){if(!e.repeat)mv(KM[k]);return}          
+  if(!held.includes(KM[k]))held.push(KM[k]);return}
     if(e.repeat)return;
     if(scene==='xmas'){
       if(k==='Space'||k==='Enter'||k==='KeyE'){e.preventDefault();if(letterOpen)letterOpen=false;else if(nearTable())openLetter()}
@@ -335,13 +364,13 @@ addEventListener('keydown',e=>{
   else if(k==='Enter'||k==='Space'){activate();e.preventDefault()}
   else if(k==='Escape'){if(paused)togglePause();else if(scene==='how'||scene==='select')toTitle()}
 });
-addEventListener('keyup',e=>{if(KM[e.code]===dir)dir=null});
-addEventListener('blur',()=>{dir=null});
+addEventListener('keyup',e=>{const i=held.indexOf(KM[e.code]);if(i>=0)held.splice(i,1)});
+addEventListener('blur',()=>{held.length=0});
 
 /* ---------- Vòng lặp ---------- */
 function step(){
   if(toastT>0)toastT--;
-  if((scene==='play'&&!paused)||scene==='xmas'){pvx+=(px-pvx)*.25;pvy+=(py-pvy)*.25;repeat()}
+  if((scene==='play'&&!paused)||scene==='xmas')walk();
   if(scene==='play'&&!paused)upd();
 }
 gen(LV[0]);buildBg();toTitle();
